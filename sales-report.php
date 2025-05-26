@@ -2,6 +2,12 @@
 session_start();
 require_once('inc/config.php'); // conexión a la BD
 require_once('header.php');// tu cabecera del admin
+
+// Procesar filtro de fecha
+$fecha_filtro = '';
+if (isset($_GET['fecha']) && !empty($_GET['fecha'])) {
+    $fecha_filtro = $_GET['fecha'];
+}
 ?>
 
 <section class="content-header">
@@ -13,6 +19,16 @@ require_once('header.php');// tu cabecera del admin
 <section class="content">
     <div class="row">
         <div class="col-md-12">
+            <!-- Formulario de filtro por fecha -->
+            <form method="get" class="form-inline" style="margin-bottom:15px;">
+                <label for="fecha">Buscar por fecha:</label>
+                <input type="date" id="fecha" name="fecha" value="<?php echo htmlspecialchars($fecha_filtro); ?>" class="form-control" required>
+                <button type="submit" class="btn btn-primary">Buscar</button>
+                <?php if($fecha_filtro): ?>
+                    <a href="sales-report.php" class="btn btn-default">Limpiar</a>
+                <?php endif; ?>
+            </form>
+
             <div class="box box-info">
                 <div class="box-body table-responsive">
                     <table class="table table-bordered table-striped">
@@ -30,10 +46,24 @@ require_once('header.php');// tu cabecera del admin
                         </thead>
                         <tbody>
                             <?php
-                            $stmt = $pdo->prepare("SELECT * FROM tbl_payment ORDER BY payment_date DESC");
-                            $stmt->execute();
+                            if ($fecha_filtro) {
+                                // Mostrar solo pagos de la fecha seleccionada
+                                $stmt = $pdo->prepare("SELECT * FROM tbl_payment WHERE DATE(payment_date) = :fecha ORDER BY payment_date DESC");
+                                $stmt->execute(['fecha' => $fecha_filtro]);
+                            } else {
+                                // Mostrar todos los pagos
+                                $stmt = $pdo->prepare("SELECT * FROM tbl_payment ORDER BY payment_date DESC");
+                                $stmt->execute();
+                            }
                             $result = $stmt->fetchAll();
-                            foreach ($result as $row):
+                            if (empty($result)):
+                            ?>
+                                <tr>
+                                    <td colspan="8" style="text-align:center;">No hay resultados para la fecha seleccionada.</td>
+                                </tr>
+                            <?php
+                            else:
+                                foreach ($result as $row):
                             ?>
                             <tr>
                                 <td><?php echo $row['customer_id']; ?></td>
@@ -50,7 +80,10 @@ require_once('header.php');// tu cabecera del admin
                                     </form>
                                 </td>
                             </tr>
-                            <?php endforeach; ?>
+                            <?php
+                                endforeach;
+                            endif;
+                            ?>
                         </tbody>
                     </table>
                 </div>
