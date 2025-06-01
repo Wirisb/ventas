@@ -122,20 +122,23 @@ if(!isset($_SESSION['cart_p_id'])) {
                             <td><?php echo $arr_cart_p_name[$i]; ?></td>
                             <td><?php echo $arr_cart_size_name[$i]; ?></td>
                             <td><?php echo $arr_cart_color_name[$i]; ?></td>
-                            <td><?php echo LANG_VALUE_1; ?><?php echo $arr_cart_p_current_price[$i]; ?></td>
+                            <!-- PRECIO UNITARIO EN PESOS COLOMBIANOS -->
+                            <td><?php echo '$'.number_format($arr_cart_p_current_price[$i],0,',','.').' COP'; ?></td>
                             <td><?php echo $arr_cart_p_qty[$i]; ?></td>
+                            <!-- TOTAL POR PRODUCTO EN PESOS COLOMBIANOS -->
                             <td class="text-right">
                                 <?php
                                 $row_total_price = $arr_cart_p_current_price[$i]*$arr_cart_p_qty[$i];
                                 $table_total_price = $table_total_price + $row_total_price;
                                 ?>
-                                <?php echo LANG_VALUE_1; ?><?php echo $row_total_price; ?>
+                                <?php echo '$'.number_format($row_total_price,0,',','.').' COP'; ?>
                             </td>
                         </tr>
                         <?php endfor; ?>           
                         <tr>
                             <th colspan="7" class="total-text"><?php echo LANG_VALUE_81; ?></th>
-                            <th class="total-amount"><?php echo LANG_VALUE_1; ?><?php echo $table_total_price; ?></th>
+                            <!-- SUBTOTAL EN PESOS COLOMBIANOS -->
+                            <th class="total-amount"><?php echo '$'.number_format($table_total_price,0,',','.').' COP'; ?></th>
                         </tr>
                         <?php
                         $statement = $pdo->prepare("SELECT * FROM tbl_shipping_cost WHERE country_id=?");
@@ -157,15 +160,17 @@ if(!isset($_SESSION['cart_p_id'])) {
                         ?>
                         <tr>
                             <td colspan="7" class="total-text"><?php echo LANG_VALUE_84; ?></td>
-                            <td class="total-amount"><?php echo LANG_VALUE_1; ?><?php echo $shipping_cost; ?></td>
+                            <!-- COSTO DE ENVÍO EN PESOS COLOMBIANOS -->
+                            <td class="total-amount"><?php echo '$'.number_format($shipping_cost,0,',','.').' COP'; ?></td>
                         </tr>
                         <tr>
                             <th colspan="7" class="total-text"><?php echo LANG_VALUE_82; ?></th>
+                            <!-- TOTAL FINAL EN PESOS COLOMBIANOS -->
                             <th class="total-amount">
                                 <?php
                                 $final_total = $table_total_price+$shipping_cost;
                                 ?>
-                                <?php echo LANG_VALUE_1; ?><?php echo $final_total; ?>
+                                <?php echo '$'.number_format($final_total,0,',','.').' COP'; ?>
                             </th>
                         </tr>
                     </table> 
@@ -312,7 +317,7 @@ if(!isset($_SESSION['cart_p_id'])) {
 		                <?php if($checkout_access == 0): ?>
 		                	<div class="col-md-12">
 				                <div style="color:red;font-size:22px;margin-bottom:50px;">
-			                        You must have to fill up all the billing and shipping information from your dashboard panel in order to checkout the order. Please fill up the information going to <a href="customer-billing-shipping-update.php" style="color:red;text-decoration:underline;">this link</a>.
+			                        You must have to fill up all the billing and shipping information from your dashboard panel in order to checkout the order. Please fill up the information going to <a href="[...]
 			                    </div>
 	                    	</div>
 	                	<?php else: ?>

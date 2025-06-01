@@ -5,7 +5,6 @@ if(!isset($_REQUEST['id'])) {
     header('location: index.php');
     exit;
 } else {
-    // Check the id is valid or not
     $statement = $pdo->prepare("SELECT * FROM tbl_product WHERE p_id=?");
     $statement->execute(array($_REQUEST['id']));
     $total = $statement->rowCount();
@@ -32,7 +31,6 @@ foreach($result as $row) {
     $p_is_active = $row['p_is_active'];
     $ecat_id = $row['ecat_id'];
 }
-
 // Getting all categories name for breadcrumb
 $statement = $pdo->prepare("SELECT
                         t1.ecat_id,
@@ -456,14 +454,15 @@ if($success_message1 != '') {
                                 
                             </div>
 							<div class="p-price">
-                                <span style="font-size:14px;"><?php echo LANG_VALUE_54; ?></span><br>
-                                <span>
-                                    <?php if($p_old_price!=''): ?>
-                                        <del><?php echo LANG_VALUE_1; ?><?php echo $p_old_price; ?></del>
-                                    <?php endif; ?> 
-                                        <?php echo LANG_VALUE_1; ?><?php echo $p_current_price; ?>
-                                </span>
-                            </div>
+    <span style="font-size:14px;"><?php echo LANG_VALUE_54; ?></span><br>
+    <span>
+        <?php if($p_old_price!=''): ?>
+            <del><?php echo '$'.number_format($p_old_price,0,',','.').' COP'; ?></del>
+        <?php endif; ?> 
+        <?php echo '$'.number_format($p_current_price,0,',','.').' COP'; ?>
+    </span>
+</div>
+
                             <input type="hidden" name="p_current_price" value="<?php echo $p_current_price; ?>">
                             <input type="hidden" name="p_name" value="<?php echo $p_name; ?>">
                             <input type="hidden" name="p_featured_photo" value="<?php echo $p_featured_photo; ?>">
@@ -680,14 +679,14 @@ if($success_message1 != '') {
                             </div>
                             <div class="text">
                                 <h3><a href="product.php?id=<?php echo $row['p_id']; ?>"><?php echo $row['p_name']; ?></a></h3>
-                                <h4>
-                                    <?php echo LANG_VALUE_1; ?><?php echo $row['p_current_price']; ?> 
-                                    <?php if($row['p_old_price'] != ''): ?>
-                                    <del>
-                                        <?php echo LANG_VALUE_1; ?><?php echo $row['p_old_price']; ?>
-                                    </del>
-                                    <?php endif; ?>
-                                </h4>
+                               <h4>
+    <?php echo '$'.number_format($row['p_current_price'],0,',','.').' COP'; ?>
+    <?php if($row['p_old_price'] != ''): ?>
+    <del>
+        <?php echo '$'.number_format($row['p_old_price'],0,',','.').' COP'; ?>
+    </del>
+    <?php endif; ?>
+</h4>
                                 <div class="rating">
                                     <?php
                                     $t_rating = 0;
